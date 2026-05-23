@@ -10,8 +10,8 @@ export const HTTP_STATUS = {
 };
 
 export const MESSAGES = {
-  SUCCESS: 'Operation successful',
-  ERROR: 'An error occurred',
-  NOT_FOUND: 'Resource not found',
-  UNAUTHORIZED: 'Unauthorized access',
+  SUCCESS: "Operation successful",
+  ERROR: "An error occurred",
+  NOT_FOUND: "Resource not found",
+  UNAUTHORIZED: "Unauthorized access",
 };
