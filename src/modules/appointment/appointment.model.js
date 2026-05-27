@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 const appointmentSchema = new mongoose.Schema({
-  startAt: {
+  startsAt: {
     type: Date,
     required: true,
   },
 
-  endAt: {
+  endsAt: {
     type: Date,
     required: true,
   },
