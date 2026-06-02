@@ -1,9 +1,9 @@
 import express from "express";
-import { createConsultant } from "./consultant.controller.js";
+import { createConsultant, getConsultants } from "./consultant.controller.js";
 
 const consultantRoutes = express.Router();
 
-// router.get("/consultants", getAllConsultants);
+consultantRoutes.get("/", getConsultants);
 
 consultantRoutes.post("/", createConsultant);
 

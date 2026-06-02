@@ -3,7 +3,7 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/database.js";
-import userRoutes from "./routes/userRoutes.js";
+// import userRoutes from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import consultantRoutes from "./modules/consultant/consultant.routes.js";
 
@@ -23,7 +23,7 @@ app.get("/health", (req, res) => {
 });
 
 // API Routes
-app.use(`${process.env.API_PREFIX}/user`, userRoutes);
+// app.use(`${process.env.API_PREFIX}/user`, userRoutes);
 app.use(`${process.env.API_PREFIX}/consultant`, consultantRoutes);
 
 // 404 handler
