@@ -10,7 +10,6 @@ const courseSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      required: true,
       lowercase: true,
       trim: true,
     },
@@ -92,10 +91,12 @@ courseSchema.pre("save", function (next) {
   if (this.isModified("price") || this.isModified("discount")) {
     this.finalPrice = this.price * (1 - this.discount / 100);
   }
+  next();
 });
 
 courseSchema.pre("save", function (next) {
   this.slug = this.title.split(" ").join("-").toLowerCase();
+  next();
 });
 
 courseSchema.index({ slug: 1 });

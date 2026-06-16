@@ -1,6 +1,7 @@
 import { HTTP_STATUS, MESSAGES } from "../../config/constants.js";
 import {
   createCourse,
+  deleteCourseById,
   getCourseById,
   getCourses,
   updateCourseById,
@@ -62,16 +63,16 @@ export const getCourse = async (req, res) => {
 };
 
 export const updateCourse = async (req, res) => {
-  const { courseId } = req.params;
+  const { id } = req.params;
   const newData = req.body;
 
   try {
-    const updatedCourse = await updateCourseById(id, newData);
+    const updatedCourse = await updateCourseById(id);
 
     res.status(HTTP_STATUS.OK).json({
       status: "SUCCESS",
       data: {
-        updateCourse,
+        updatedCourse,
       },
     });
   } catch (err) {
@@ -83,16 +84,14 @@ export const updateCourse = async (req, res) => {
 };
 
 export const deleteCourse = async (req, res) => {
-  try {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    await deleteCourse(id);
+  try {
+    await deleteCourseById(id);
 
     res.status(HTTP_STATUS.OK).json({
       status: "SUCCESS",
-      data: {
-        message: MESSAGES.SUCCESS,
-      },
+      data: null,
     });
   } catch (err) {
     res.status(HTTP_STATUS.NOT_FOUND).json({

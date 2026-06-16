@@ -19,7 +19,11 @@ export const getCourseById = async (id) => {
 };
 
 export const updateCourseById = async (id, data) => {
-  const result = Course.findByIdAndUpdate(id, { ...data });
+  const result = Course.findByIdAndUpdate(
+    id,
+    { ...data },
+    { new: true, runValidators: true },
+  );
 
   return result;
 };
