@@ -10,9 +10,6 @@ import courseRoutes from "./modules/course/course.route.js";
 
 const app = express();
 
-// Connect to MongoDB
-connectDB();
-
 // Middleware
 app.use(cors());
 app.use(express.json());
