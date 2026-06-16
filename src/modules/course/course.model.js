@@ -1,6 +1,6 @@
-import { model, models, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const courseSchema = new Schema(
+const courseSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -67,7 +67,7 @@ const courseSchema = new Schema(
       min: [1, "Duration is too short"],
     },
     instructor: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Consultant",
       required: true,
       index: true,
@@ -84,19 +84,22 @@ const courseSchema = new Schema(
   },
 );
 
-courseSchema.virtual("finalPrice").get(function () {
-  return this.price * (1 - this.discount / 100);
-});
+// courseSchema.virtual("finalPrice").get(function () {
+//   return this.price * (1 - this.discount / 100);
+// });
 
 courseSchema.pre("save", function (next) {
   if (this.isModified("price") || this.isModified("discount")) {
     this.finalPrice = this.price * (1 - this.discount / 100);
   }
-  next();
+});
+
+courseSchema.pre("save", function (next) {
+  this.slug = this.title.split(" ").join("-").toLowerCase();
 });
 
 courseSchema.index({ slug: 1 });
 
-const Course = models.Course || model("Course", courseSchema);
+const Course = mongoose.models.Course || mongoose.model("Course", courseSchema);
 
 export default Course;
