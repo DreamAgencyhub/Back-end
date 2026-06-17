@@ -3,14 +3,12 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/database.js";
-import userRoutes from "./routes/userRoutes.js";
+// import userRoutes from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import consultantRoutes from "./modules/consultant/consultant.routes.js";
+import courseRoutes from "./modules/course/course.route.js";
 
 const app = express();
-
-// Connect to MongoDB
-connectDB();
 
 // Middleware
 app.use(cors());
@@ -23,8 +21,9 @@ app.get("/health", (req, res) => {
 });
 
 // API Routes
-app.use(`${process.env.API_PREFIX}/user`, userRoutes);
+// app.use(`${process.env.API_PREFIX}/user`, userRoutes);
 app.use(`${process.env.API_PREFIX}/consultant`, consultantRoutes);
+app.use(`${process.env.API_PREFIX}/course`, courseRoutes);
 
 // 404 handler
 app.use((req, res) => {

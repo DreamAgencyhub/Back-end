@@ -39,5 +39,6 @@ const consultantSchema = new mongoose.Schema(
 
 consultantSchema.index({ fullName: 1 }, { unique: true });
 
-const Consultant = mongoose.model("Consultant", consultantSchema);
+const Consultant =
+  mongoose.models.Consultant || mongoose.model("Consultant", consultantSchema);
 export default Consultant;

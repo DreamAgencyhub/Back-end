@@ -1,0 +1,72 @@
+[
+  {
+    "fullName": "Hamid Admin",
+    "email": "admin@dreamagency.com",
+    "password": "Admin12345",
+    "role": "admin",
+    "avatar": "users/admin-avatar.jpg"
+  },
+  {
+    "fullName": "John Carter",
+    "email": "john.carter@example.com",
+    "password": "User123456",
+    "role": "user",
+    "avatar": "users/john-avatar.jpg"
+  },
+  {
+    "fullName": "Emma Wilson",
+    "email": "emma.wilson@example.com",
+    "password": "User123456",
+    "role": "user",
+    "avatar": "users/emma-avatar.jpg"
+  },
+  {
+    "fullName": "Michael Brown",
+    "email": "michael.brown@example.com",
+    "password": "User123456",
+    "role": "user",
+    "avatar": "users/michael-avatar.jpg"
+  },
+  {
+    "fullName": "Sophia Davis",
+    "email": "sophia.davis@example.com",
+    "password": "User123456",
+    "role": "user",
+    "avatar": "users/sophia-avatar.jpg"
+  },
+  {
+    "fullName": "David Miller",
+    "email": "david.miller@example.com",
+    "password": "Teacher12345",
+    "role": "consultant",
+    "avatar": "users/david-avatar.jpg"
+  },
+  {
+    "fullName": "Olivia Anderson",
+    "email": "olivia.anderson@example.com",
+    "password": "Teacher12345",
+    "role": "consultant",
+    "avatar": "users/olivia-avatar.jpg"
+  },
+  {
+    "fullName": "James Taylor",
+    "email": "james.taylor@example.com",
+    "password": "Teacher12345",
+    "role": "consultant",
+    "avatar": "users/james-avatar.jpg"
+  },
+  {
+    "fullName": "Isabella Thomas",
+    "email": "isabella.thomas@example.com",
+    "password": "Teacher12345",
+    "role": "consultant",
+    "avatar": "users/isabella-avatar.jpg"
+  },
+  {
+    "fullName": "William Martinez",
+    "email": "william.martinez@example.com",
+    "password": "Teacher12345",
+    "role": "consultant",
+    "avatar": "users/william-avatar.jpg"
+  }
+]

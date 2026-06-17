@@ -1,10 +1,18 @@
 import express from "express";
-import { createConsultant } from "./consultant.controller.js";
+import {
+  createConsultant,
+  getConsultants,
+  updateConsultant,
+  getConsultant,
+  deleteConsultant,
+} from "./consultant.controller.js";
 
 const consultantRoutes = express.Router();
 
-// router.get("/consultants", getAllConsultants);
-
+consultantRoutes.get("/", getConsultants);
 consultantRoutes.post("/", createConsultant);
+consultantRoutes.get("/:id", getConsultant);
+consultantRoutes.patch("/:id", updateConsultant);
+consultantRoutes.delete("/:id", deleteConsultant);
 
 export default consultantRoutes;
