@@ -28,6 +28,10 @@ app.use(`${process.env.API_PREFIX}/course`, courseRoutes);
 
 // 404 handler
 app.use((req, res, next) => {
+  console.log(
+    "THSIIIIIIIIIIIIIIIIIIIIIII",
+    new AppErrorHandler(`The route ${req.originalUrl} was not found!`, 404),
+  );
   next(new AppErrorHandler(`The route ${req.originalUrl} was not found!`, 404));
 });
 

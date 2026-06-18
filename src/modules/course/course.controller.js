@@ -6,97 +6,63 @@ import {
   getCourses,
   updateCourseById,
 } from "./course.service.js";
+import catchAsync from "../../utils/catchAsync.js";
 
-export const createNewCourse = async (req, res) => {
-  try {
-    const newCourse = await createCourse(req.body);
+export const createNewCourse = catchAsync(async (req, res) => {
+  const newCourse = await createCourse(req.body);
 
-    res.status(HTTP_STATUS.CREATED).json({
-      status: "SUCCESS",
-      data: {
-        newCourse,
-      },
-    });
-  } catch (err) {
-    res.status(HTTP_STATUS.BAD_REQUEST).json({
-      status: "FAILED",
-      message: err.message,
-    });
-  }
-};
+  res.status(HTTP_STATUS.CREATED).json({
+    status: "SUCCESS",
+    data: {
+      newCourse,
+    },
+  });
+});
 
-export const getAllCourses = async (req, res) => {
-  try {
-    const courses = await getCourses();
+export const getAllCourses = catchAsync(async (req, res) => {
+  const courses = await getCourses();
 
-    res.status(HTTP_STATUS.OK).json({
-      status: "SUCCESS",
-      result: courses.length,
-      data: {
-        courses,
-      },
-    });
-  } catch (err) {
-    res.status(HTTP_STATUS.NOT_FOUND).json({
-      status: "FAILED",
-      message: err.message,
-    });
-  }
-};
+  res.status(HTTP_STATUS.OK).json({
+    status: "SUCCESS",
+    result: courses.length,
+    data: {
+      courses,
+    },
+  });
+});
 
-export const getCourse = async (req, res) => {
-  try {
-    const course = await getCourseById(req.params.id);
+export const getCourse = catchAsync(async (req, res) => {
+  const course = await getCourseById(req.params.id);
 
-    res.status(HTTP_STATUS.OK).json({
-      status: "SUCCESS",
-      data: {
-        course,
-      },
-    });
-  } catch (err) {
-    res.status(HTTP_STATUS.NOT_FOUND).json({
-      status: "FAILED",
-      message: err.message,
-    });
-  }
-};
+  res.status(HTTP_STATUS.OK).json({
+    status: "SUCCESS",
+    data: {
+      course,
+    },
+  });
+});
 
-export const updateCourse = async (req, res) => {
+export const updateCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
   const newData = req.body;
 
-  try {
-    const updatedCourse = await updateCourseById(id);
+  const updatedCourse = await updateCourseById(id);
 
-    res.status(HTTP_STATUS.OK).json({
-      status: "SUCCESS",
-      data: {
-        updatedCourse,
-      },
-    });
-  } catch (err) {
-    res.status(HTTP_STATUS.BAD_REQUEST).json({
-      status: "FAILED",
-      message: err.message,
-    });
-  }
-};
+  res.status(HTTP_STATUS.OK).json({
+    status: "SUCCESS",
+    data: {
+      updatedCourse,
+    },
+  });
+});
 
-export const deleteCourse = async (req, res) => {
+export const deleteCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  try {
-    await deleteCourseById(id);
+  await deleteCourseById(id);
 
-    res.status(HTTP_STATUS.OK).json({
-      status: "SUCCESS",
-      data: null,
-    });
-  } catch (err) {
-    res.status(HTTP_STATUS.NOT_FOUND).json({
-      status: "FAILED",
-      message: err.message,
-    });
-  }
-};
+  res.status(HTTP_STATUS.OK).json({
+    status: "SUCCESS",
+    data: null,
+  });
+});

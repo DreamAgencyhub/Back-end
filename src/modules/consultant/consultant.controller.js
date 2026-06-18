@@ -1,4 +1,5 @@
 import { HTTP_STATUS } from "../../config/constants.js";
+import catchAsync from "../../utils/catchAsync.js";
 import {
   createNewConsultant,
   getAllConsultants,
@@ -6,88 +7,49 @@ import {
   updateConsultantById,
 } from "./consultant.service.js";
 
-export const createConsultant = async (req, res) => {
-  try {
-    const newConsultant = await createNewConsultant(req.body);
+export const createConsultant = catchAsync(async (req, res) => {
+  const newConsultant = await createNewConsultant(req.body);
 
-    return res.status(HTTP_STATUS.CREATED).json({
-      status: "success",
-      data: {
-        newConsultant,
-      },
-    });
-  } catch (error) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      status: "failed",
-      message: error.message,
-      error: error,
-    });
-  }
-};
+  return res.status(HTTP_STATUS.CREATED).json({
+    status: "success",
+    data: {
+      newConsultant,
+    },
+  });
+});
 
-export const getConsultants = async (req, res) => {
-  try {
-    const consultants = await getAllConsultants();
+export const getConsultants = catchAsync(async (req, res) => {
+  const consultants = await getAllConsultants();
 
-    res.status(HTTP_STATUS.OK).json({
-      status: "success",
-      data: { consultants },
-    });
-  } catch (err) {
-    res.status(HTTP_STATUS.NOT_FOUND).json({
-      status: "failed",
-      message: err.message,
-    });
-  }
-};
+  res.status(HTTP_STATUS.OK).json({
+    status: "success",
+    data: { consultants },
+  });
+});
 
-export const getConsultant = async (req, res) => {
-  try {
-    const consultant = await getConsultantById(req.params.id);
+export const getConsultant = catchAsync(async (req, res) => {
+  const consultant = await getConsultantById(req.params.id);
 
-    res.status(HTTP_STATUS.OK).json({
-      status: "success",
-      data: { consultant },
-    });
-  } catch (err) {
-    res.status(HTTP_STATUS.NOT_FOUND).json({
-      status: "failed",
-      message: err.message,
-    });
-  }
-};
+  res.status(HTTP_STATUS.OK).json({
+    status: "success",
+    data: { consultant },
+  });
+});
 
-export const updateConsultant = async (req, res) => {
-  try {
-    const updatedConsultant = await updateConsultantById(
-      req.params.id,
-      req.body,
-    );
+export const updateConsultant = catchAsync(async (req, res) => {
+  const updatedConsultant = await updateConsultantById(req.params.id, req.body);
 
-    res.status(HTTP_STATUS.OK).json({
-      status: "success",
-      data: { updatedConsultant },
-    });
-  } catch (err) {
-    res.status(HTTP_STATUS.NOT_FOUND).json({
-      status: "failed",
-      message: err.message,
-    });
-  }
-};
+  res.status(HTTP_STATUS.OK).json({
+    status: "success",
+    data: { updatedConsultant },
+  });
+});
 
-export const deleteConsultant = async (req, res) => {
-  try {
-    await deleteConsultantById(req.params.id);
+export const deleteConsultant = catchAsync(async (req, res) => {
+  await deleteConsultantById(req.params.id);
 
-    res.status(HTTP_STATUS.OK).json({
-      status: "success",
-      message: "Consultant deleted successfully",
-    });
-  } catch (err) {
-    res.status(HTTP_STATUS.NOT_FOUND).json({
-      status: "failed",
-      message: err.message,
-    });
-  }
-};
+  res.status(HTTP_STATUS.OK).json({
+    status: "success",
+    message: "Consultant deleted successfully",
+  });
+});
