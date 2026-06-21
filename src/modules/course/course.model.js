@@ -57,7 +57,6 @@ const courseSchema = new mongoose.Schema(
 
     finalPrice: {
       type: Number,
-      required: true,
     },
 
     duration: {
@@ -74,6 +73,11 @@ const courseSchema = new mongoose.Schema(
     coverImage: {
       type: String,
       required: true,
+    },
+
+    isPublished: {
+      type: Boolean,
+      default: false,
     },
   },
   {

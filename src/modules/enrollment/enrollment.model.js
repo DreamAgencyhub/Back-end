@@ -1,6 +1,6 @@
-import { model, models, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const enrollmentSchema = new Schema(
+const enrollmentSchema = new mongoose.Schema(
   {
     status: {
       type: String,
@@ -25,6 +25,7 @@ const enrollmentSchema = new Schema(
 
 enrollmentSchema.index({ user: 1, course: 1 }, { unique: true });
 
-const Enrollment = models.Enrollment || model("Enrollment", enrollmentSchema);
+const Enrollment =
+  mongoose.models.Enrollment || mongoose.model("Enrollment", enrollmentSchema);
 
 export default Enrollment;

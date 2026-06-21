@@ -1,14 +1,76 @@
-const errorHandler = (err, req, res, next) => {
-  const status = err.status || 500;
-  const message = err.message || 'Internal Server Error';
+import AppErrorHandler from "../utils/appErrorHandler.js";
 
-  console.error(`[Error] ${status}: ${message}`);
+const handleInvalidIDErrorDB = (err) => {
+  const message = `The /${err.value}/ is not valid! Path: ${err.path} , value: ${err.value} `;
 
-  res.status(status).json({
-    success: false,
-    status,
-    message,
+  return new AppErrorHandler(message, 400);
+};
+
+const convertObjectToString = (obj) => {
+  for (const [key, value] of Object.entries(obj)) {
+    return `${key}: ${value}`;
+  }
+};
+
+const handleDuplicateFiledValueErrorDB = (err) => {
+  const res = convertObjectToString(err.keyValue);
+
+  const message = `Duplicate filed value / ${res} /, Please enter another value! `;
+
+  return new AppErrorHandler(message, 400);
+};
+
+const handleValidationErrorDB = (err) => {
+  const errMessages = Object.values(err.errors).map((el) => el.message);
+
+  const message = `Validation Error : ${errMessages.join(". ")}`;
+
+  return new AppErrorHandler(message, 400);
+};
+
+const sendDveError = (err, res) => {
+  res.status(err.statusCode).json({
+    statusCode: err.statusCode,
+    status: err.status,
+    message: err.message,
+    stack: err.stack,
+    err: err,
   });
+};
+
+const sendProductionError = (err, res) => {
+  if (err.isOperational) {
+    res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
+  } else {
+    console.err("ERROR 💥", err);
+
+    err.status(500).json({
+      status: "error",
+      message: "Wooops!, something wet wrong!",
+    });
+  }
+};
+
+const errorHandler = (err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || "error";
+
+  if (process.env.NODE_ENV === "Development") {
+    sendDveError(err, res);
+  } else if (process.env.NODE_ENV === "Production") {
+    let error = { ...err };
+
+    if (err.name === "CastError") error = handleInvalidIDErrorDB(err);
+    if (err.code === 11000) error = handleDuplicateFiledValueErrorDB(err);
+    if (err.name === "ValidationError") error = handleValidationErrorDB(err);
+
+    sendProductionError(error, res);
+  }
+
+  next();
 };
 
 export default errorHandler;

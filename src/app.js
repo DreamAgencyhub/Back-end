@@ -7,6 +7,7 @@ import { connectDB } from "./config/database.js";
 import errorHandler from "./middleware/errorHandler.js";
 import consultantRoutes from "./modules/consultant/consultant.routes.js";
 import courseRoutes from "./modules/course/course.route.js";
+import AppErrorHandler from "./utils/appErrorHandler.js";
 
 const app = express();
 
@@ -26,11 +27,8 @@ app.use(`${process.env.API_PREFIX}/consultant`, consultantRoutes);
 app.use(`${process.env.API_PREFIX}/course`, courseRoutes);
 
 // 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
+app.use((req, res, next) => {
+  next(new AppErrorHandler(`The route ${req.originalUrl} was not found!`, 404));
 });
 
 // Error handling middleware
