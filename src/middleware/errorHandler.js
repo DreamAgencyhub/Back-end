@@ -6,6 +6,28 @@ const handleInvalidIDErrorDB = (err) => {
   return new AppErrorHandler(message, 400);
 };
 
+const convertObjectToString = (obj) => {
+  for (const [key, value] of Object.entries(obj)) {
+    return `${key}: ${value}`;
+  }
+};
+
+const handleDuplicateFiledValueErrorDB = (err) => {
+  const res = convertObjectToString(err.keyValue);
+
+  const message = `Duplicate filed value / ${res} /, Please enter another value! `;
+
+  return new AppErrorHandler(message, 400);
+};
+
+const handleValidationErrorDB = (err) => {
+  const errMessages = Object.values(err.errors).map((el) => el.message);
+
+  const message = `Validation Error : ${errMessages.join(". ")}`;
+
+  return new AppErrorHandler(message, 400);
+};
+
 const sendDveError = (err, res) => {
   res.status(err.statusCode).json({
     statusCode: err.statusCode,
@@ -42,6 +64,8 @@ const errorHandler = (err, req, res, next) => {
     let error = { ...err };
 
     if (err.name === "CastError") error = handleInvalidIDErrorDB(err);
+    if (err.code === 11000) error = handleDuplicateFiledValueErrorDB(err);
+    if (err.name === "ValidationError") error = handleValidationErrorDB(err);
 
     sendProductionError(error, res);
   }
