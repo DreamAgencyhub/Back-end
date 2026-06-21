@@ -1,9 +1,18 @@
+import AppErrorHandler from "../utils/appErrorHandler.js";
+
+const handleInvalidIDErrorDB = (err) => {
+  const message = `The /${err.value}/ is not valid! Path: ${err.path} , value: ${err.value} `;
+
+  return new AppErrorHandler(message, 400);
+};
+
 const sendDveError = (err, res) => {
   res.status(err.statusCode).json({
     statusCode: err.statusCode,
     status: err.status,
     message: err.message,
     stack: err.stack,
+    err: err,
   });
 };
 
@@ -30,7 +39,11 @@ const errorHandler = (err, req, res, next) => {
   if (process.env.NODE_ENV === "Development") {
     sendDveError(err, res);
   } else if (process.env.NODE_ENV === "Production") {
-    sendProductionError(err, res);
+    let error = { ...err };
+
+    if (err.name === "CastError") error = handleInvalidIDErrorDB(err);
+
+    sendProductionError(error, res);
   }
 
   next();

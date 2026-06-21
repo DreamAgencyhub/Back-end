@@ -7,7 +7,7 @@
   "main": "server.js",
   "scripts": {
     "start": "cross-env NODE_ENV=Production node server.js",
-    "dev": "crosse-env NODE_ENV=Development nodemon server.js",
+    "dev": "cross-env NODE_ENV=Development nodemon server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "seed-data": "node src/scripts/seedUser.js"
   },
