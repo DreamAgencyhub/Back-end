@@ -1,5 +1,13 @@
 import dotenv from "dotenv";
 dotenv.config();
+
+process.on("uncaughtException", (err) => {
+  console.log("UNCAUGHT EXCEPTION ERROR! 💥💥💥 shuting down...");
+  console.log(err.name, err.message);
+
+  process.exit(1);
+});
+
 import app from "./src/app.js";
 import { connectDB } from "./src/config/database.js";
 
