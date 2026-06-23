@@ -8,7 +8,7 @@ export const createUser = catchAsync(async (req, res, next) => {
   res.status(HTTP_STATUS.CREATED).json({
     status: "success",
     data: {
-      user,
+      ...user,
     },
   });
 });
