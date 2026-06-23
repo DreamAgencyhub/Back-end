@@ -1,5 +1,7 @@
+import { HTTP_STATUS } from "../../../config/constants.js";
+import AppErrorHandler from "../../../utils/appErrorHandler.js";
 import User from "../../user/user.model.js";
-import jwt from "jsonwebtoken";
+import { signToken } from "./auth.utils.js";
 
 export const createNewUser = async (newUser) => {
   const { fullName, email, role, _id, avatar } = await User.create({
@@ -9,20 +11,10 @@ export const createNewUser = async (newUser) => {
     avatar: newUser.avatar,
   });
 
-  const token = jwt.sign(
-    {
-      fullName,
-      email,
-      _id,
-      role,
-    },
-    process.env.MY_JWT_SECRET_KEY,
-    {
-      expiresIn: process.env.JWT_EXPIRY,
-    },
-  );
+  const token = signToken(_id);
 
   return {
+    token,
     user: {
       fullName,
       email,
@@ -30,6 +22,27 @@ export const createNewUser = async (newUser) => {
       _id,
       avatar,
     },
-    token,
   };
+};
+
+export const loginUser = async (credentials) => {
+  const { email, password } = credentials;
+
+  if (!email || !password)
+    throw new AppErrorHandler(
+      "Please provide email and password!",
+      HTTP_STATUS.BAD_REQUEST,
+    );
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user || !(await user.isPasswordCorrect(password, user.password)))
+    throw new AppErrorHandler(
+      "Invalid email or password!",
+      HTTP_STATUS.BAD_REQUEST,
+    );
+
+  const token = signToken(user._id);
+
+  return token;
 };
