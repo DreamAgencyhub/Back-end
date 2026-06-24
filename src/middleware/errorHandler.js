@@ -1,3 +1,4 @@
+import { HTTP_STATUS } from "../config/constants.js";
 import AppErrorHandler from "../utils/appErrorHandler.js";
 
 const handleInvalidIDErrorDB = (err) => {
@@ -27,6 +28,18 @@ const handleValidationErrorDB = (err) => {
 
   return new AppErrorHandler(message, 400);
 };
+
+const handleJWTError = () =>
+  new AppErrorHandler(
+    "Invalid token. Please login again!",
+    HTTP_STATUS.UNAUTHORIZED,
+  );
+
+const handleTokenExpiredError = () =>
+  new AppErrorHandler(
+    "Your Token has expired! Please login again.",
+    HTTP_STATUS.UNAUTHORIZED,
+  );
 
 const sendDveError = (err, res) => {
   res.status(err.statusCode).json({
@@ -66,6 +79,8 @@ const errorHandler = (err, req, res, next) => {
     if (err.name === "CastError") error = handleInvalidIDErrorDB(err);
     if (err.code === 11000) error = handleDuplicateFiledValueErrorDB(err);
     if (err.name === "ValidationError") error = handleValidationErrorDB(err);
+    if (err.name === "JsonWebTokenError") error = handleJWTError();
+    if (err.name === "TokenExpiredError") error = handleTokenExpiredError();
 
     sendProductionError(error, res);
   }

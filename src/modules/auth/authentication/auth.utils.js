@@ -7,6 +7,6 @@ export const signToken = (payload) =>
     },
     process.env.MY_JWT_SECRET_KEY,
     {
-      expiresIn: process.env.JWT_EXPIRY,
+      expiresIn: process.env.JWT_EXPIRES_IN,
     },
   );

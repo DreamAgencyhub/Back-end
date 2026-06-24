@@ -11,7 +11,7 @@ export const createNewUser = async (newUser) => {
     avatar: newUser.avatar,
   });
 
-  const token = signToken(_id);
+  const token = signToken({ id: _id });
 
   return {
     token,
@@ -42,7 +42,7 @@ export const loginUser = async (credentials) => {
       HTTP_STATUS.BAD_REQUEST,
     );
 
-  const token = signToken(user._id);
+  const token = signToken({ id: user._id });
 
   return token;
 };
