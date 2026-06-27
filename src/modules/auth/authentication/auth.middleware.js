@@ -43,3 +43,15 @@ export const protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+export const restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    if (!roles.includes(req.user.role))
+      throw new AppErrorHandler(
+        "You don't have the permission to perform this action!",
+        HTTP_STATUS.FORBIDDEN,
+      );
+
+    next();
+  };

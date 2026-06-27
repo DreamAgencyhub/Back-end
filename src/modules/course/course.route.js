@@ -6,7 +6,7 @@ import {
   getCourse,
   updateCourse,
 } from "./course.controller.js";
-import { protect } from "../auth/authentication/auth.middleware.js";
+import { protect, restrictTo } from "../auth/authentication/auth.middleware.js";
 
 const courseRoutes = express.Router();
 
@@ -15,7 +15,7 @@ courseRoutes.route("/").get(getAllCourses).post(createNewCourse);
 courseRoutes
   .route("/:id")
   .get(getCourse)
-  .patch(protect, updateCourse)
+  .patch(protect, restrictTo("admin", "consultant"), updateCourse)
   .delete(deleteCourse);
 
 export default courseRoutes;

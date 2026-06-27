@@ -4,7 +4,7 @@ import AppErrorHandler from "../utils/appErrorHandler.js";
 const handleInvalidIDErrorDB = (err) => {
   const message = `The /${err.value}/ is not valid! Path: ${err.path} , value: ${err.value} `;
 
-  return new AppErrorHandler(message, 400);
+  return new AppErrorHandler(message, HTTP_STATUS.BAD_REQUEST);
 };
 
 const convertObjectToString = (obj) => {
@@ -18,7 +18,7 @@ const handleDuplicateFiledValueErrorDB = (err) => {
 
   const message = `Duplicate filed value / ${res} /, Please enter another value! `;
 
-  return new AppErrorHandler(message, 400);
+  return new AppErrorHandler(message, HTTP_STATUS.BAD_REQUEST);
 };
 
 const handleValidationErrorDB = (err) => {
@@ -26,7 +26,7 @@ const handleValidationErrorDB = (err) => {
 
   const message = `Validation Error : ${errMessages.join(". ")}`;
 
-  return new AppErrorHandler(message, 400);
+  return new AppErrorHandler(message, HTTP_STATUS.BAD_REQUEST);
 };
 
 const handleJWTError = () =>
@@ -60,7 +60,7 @@ const sendProductionError = (err, res) => {
   } else {
     console.err("ERROR 💥", err);
 
-    err.status(500).json({
+    err.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       status: "error",
       message: "Wooops!, something wet wrong!",
     });
@@ -68,7 +68,7 @@ const sendProductionError = (err, res) => {
 };
 
 const errorHandler = (err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
+  err.statusCode = err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR;
   err.status = err.status || "error";
 
   if (process.env.NODE_ENV === "Development") {
