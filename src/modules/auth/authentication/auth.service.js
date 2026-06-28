@@ -46,3 +46,24 @@ export const loginUser = async (credentials) => {
 
   return token;
 };
+
+export const handleForgotPassword = async (email) => {
+  // 1. find user by email
+  const user = await User.findOne({ email });
+
+  if (!user)
+    throw new AppErrorHandler(
+      "The user not found!",
+      HTTP_STATUS.NOT_FOUND,
+      "FORGOT_PASSWORD_ERROR",
+    );
+
+  // 2. create random token
+  const restToken = user.createPasswordResetToken();
+
+  // 3. save random token in db
+  user.save({ validateBeforeSave: false });
+
+  // 4. send token to user's email
+  return restToken;
+};

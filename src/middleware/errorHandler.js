@@ -41,6 +41,20 @@ const handleTokenExpiredError = () =>
     HTTP_STATUS.UNAUTHORIZED,
   );
 
+const handleForgotPasswordError = () => {
+  const err = new AppErrorHandler(
+    "If an account with this email exists, We've sent a  password rest link",
+    HTTP_STATUS.OK,
+  );
+
+  return {
+    ...err,
+    status: "OK",
+    message: err.message,
+    statusCode: err.statusCode,
+  };
+};
+
 const sendDveError = (err, res) => {
   res.status(err.statusCode).json({
     statusCode: err.statusCode,
@@ -81,6 +95,8 @@ const errorHandler = (err, req, res, next) => {
     if (err.name === "ValidationError") error = handleValidationErrorDB(err);
     if (err.name === "JsonWebTokenError") error = handleJWTError();
     if (err.name === "TokenExpiredError") error = handleTokenExpiredError();
+    if (err.customName === "FORGOT_PASSWORD_ERROR")
+      error = handleForgotPasswordError();
 
     sendProductionError(error, res);
   }
