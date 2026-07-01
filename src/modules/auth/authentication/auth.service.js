@@ -2,6 +2,7 @@ import { HTTP_STATUS } from "../../../config/constants.js";
 import AppErrorHandler from "../../../utils/appErrorHandler.js";
 import User from "../../user/user.model.js";
 import { sendEmail, signToken } from "./auth.utils.js";
+import crypto from "crypto";
 
 export const createNewUser = async (newUser) => {
   const { fullName, email, role, _id, avatar } = await User.create({
@@ -48,7 +49,6 @@ export const loginUser = async (credentials) => {
 };
 
 export const handleForgotPassword = async ({ protocol, host, email }) => {
-  // 1. find user by email
   const user = await User.findOne({ email });
 
   if (!user)
@@ -58,13 +58,10 @@ export const handleForgotPassword = async ({ protocol, host, email }) => {
       "FORGOT_PASSWORD_ERROR",
     );
 
-  // 2. create random token
   const restToken = user.createPasswordResetToken();
 
-  // 3. save random token in db
   user.save({ validateBeforeSave: false });
 
-  // 4. send token to user's email
   const resetURL = `${protocol}://${host}/api/v1/auth/resetPassword/${restToken}`;
 
   const message = `Forgot your password? Submit a PATCH request with your new password
@@ -88,4 +85,31 @@ export const handleForgotPassword = async ({ protocol, host, email }) => {
   }
 };
 
-// export const handleResetPassword = async ()
+export const handleResetPassword = async ({
+  password,
+  confirmPassword,
+  token,
+}) => {
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetTokenExpires: { $gt: Date.now() },
+  });
+
+  if (!user)
+    throw new AppErrorHandler(
+      "Token is invalid or has expired!",
+      HTTP_STATUS.BAD_REQUEST,
+    );
+
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetTokenExpires = undefined;
+
+  await user.save();
+
+  const JWTToken = signToken({ id: user._id });
+
+  return JWTToken;
+};

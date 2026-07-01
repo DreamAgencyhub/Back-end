@@ -4,6 +4,7 @@ import catchAsync from "../../../utils/catchAsync.js";
 import {
   createNewUser,
   handleForgotPassword,
+  handleResetPassword,
   loginUser,
 } from "./auth.service.js";
 
@@ -49,9 +50,17 @@ export const forgotPassword = catchAsync(async (req, res) => {
 });
 
 export const resetPassword = catchAsync(async (req, res) => {
-  console.log(req.params, req.body);
+  const params = {
+    token: req.params.token,
+    password: req.body.password,
+  };
+
+  const token = await handleResetPassword(params);
 
   res.status(HTTP_STATUS.OK).json({
     status: "Success",
+    data: {
+      token,
+    },
   });
 });
