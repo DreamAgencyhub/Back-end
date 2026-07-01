@@ -1,7 +1,7 @@
 import { HTTP_STATUS } from "../../../config/constants.js";
 import AppErrorHandler from "../../../utils/appErrorHandler.js";
 import User from "../../user/user.model.js";
-import { signToken } from "./auth.utils.js";
+import { sendEmail, signToken } from "./auth.utils.js";
 
 export const createNewUser = async (newUser) => {
   const { fullName, email, role, _id, avatar } = await User.create({
@@ -47,7 +47,7 @@ export const loginUser = async (credentials) => {
   return token;
 };
 
-export const handleForgotPassword = async (email) => {
+export const handleForgotPassword = async ({ protocol, host, email }) => {
   // 1. find user by email
   const user = await User.findOne({ email });
 
@@ -65,5 +65,27 @@ export const handleForgotPassword = async (email) => {
   user.save({ validateBeforeSave: false });
 
   // 4. send token to user's email
-  return restToken;
+  const resetURL = `${protocol}://${host}/api/v1/auth/resetPassword/${restToken}`;
+
+  const message = `Forgot your password? Submit a PATCH request with your new password
+   and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+
+  try {
+    const result = await sendEmail({
+      email: user.email,
+      subject: "Your password reset token (valid for 10 min)",
+      message,
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    throw new AppErrorHandler(
+      "There was an error sending the email. Try again later!",
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+    );
+  }
 };
+
+// export const handleResetPassword = async ()
