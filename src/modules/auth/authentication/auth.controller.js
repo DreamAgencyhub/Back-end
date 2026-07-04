@@ -5,6 +5,7 @@ import {
   createNewUser,
   handleForgotPassword,
   handleResetPassword,
+  handleUpdatePassword,
   loginUser,
 } from "./auth.service.js";
 
@@ -59,6 +60,23 @@ export const resetPassword = catchAsync(async (req, res) => {
 
   res.status(HTTP_STATUS.OK).json({
     status: "Success",
+    data: {
+      token,
+    },
+  });
+});
+
+export const updatePassword = catchAsync(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.user._id;
+
+  const token = await handleUpdatePassword(userId, {
+    currentPassword,
+    newPassword,
+  });
+
+  res.status(HTTP_STATUS.OK).json({
+    status: "success",
     data: {
       token,
     },

@@ -113,3 +113,26 @@ export const handleResetPassword = async ({
 
   return JWTToken;
 };
+
+export const handleUpdatePassword = async (
+  userId,
+  { currentPassword, newPassword },
+) => {
+  const user = await User.findById(userId).select("+password");
+
+  if (!user)
+    throw new AppErrorHandler("User not found!", HTTP_STATUS.NOT_FOUND);
+
+  if (!(await user.isPasswordCorrect(currentPassword, user.password)))
+    throw new AppErrorHandler(
+      "Current password is incorrect!",
+      HTTP_STATUS.UNAUTHORIZED,
+    );
+
+  user.password = newPassword;
+  await user.save();
+
+  const JWTToken = signToken({ id: user._id });
+
+  return JWTToken;
+};
