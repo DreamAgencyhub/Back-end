@@ -38,6 +38,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetTokenExpires: Date,
