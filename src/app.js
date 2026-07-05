@@ -28,7 +28,7 @@ app.get("/health", (req, res) => {
 app.use(`${process.env.API_PREFIX}/consultant`, consultantRoutes);
 app.use(`${process.env.API_PREFIX}/course`, courseRoutes);
 app.use(`${process.env.API_PREFIX}/auth`, authRoutes);
-app.use(`${process.env.API_PREFIX}/user-profile`, userRoutes);
+app.use(`${process.env.API_PREFIX}/user`, userRoutes);
 
 // 404 handler
 app.use((req, res, next) => {

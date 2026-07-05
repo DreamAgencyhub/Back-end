@@ -30,3 +30,8 @@ export const handleDeleteMe = async (userId) => {
   const result = await User.findByIdAndUpdate(userId, { active: false });
   return result;
 };
+
+export const handleGetUsers = async () => {
+  const users = await User.find();
+  return users;
+};
