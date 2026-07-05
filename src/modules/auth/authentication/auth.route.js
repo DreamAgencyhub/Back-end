@@ -14,6 +14,6 @@ authRoutes.post("/signup", signup);
 authRoutes.post("/login", login);
 authRoutes.post("/forgotPassword", forgotPassword);
 authRoutes.patch("/resetPassword/:token", resetPassword);
-authRoutes.patch("/updatePassword", protect, updatePassword);
+authRoutes.patch("/updateMyPassword", protect, updatePassword);
 
 export default authRoutes;

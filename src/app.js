@@ -9,6 +9,7 @@ import consultantRoutes from "./modules/consultant/consultant.routes.js";
 import courseRoutes from "./modules/course/course.route.js";
 import AppErrorHandler from "./utils/appErrorHandler.js";
 import authRoutes from "./modules/auth/authentication/auth.route.js";
+import { userRoutes } from "./modules/user/user.route.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.get("/health", (req, res) => {
 app.use(`${process.env.API_PREFIX}/consultant`, consultantRoutes);
 app.use(`${process.env.API_PREFIX}/course`, courseRoutes);
 app.use(`${process.env.API_PREFIX}/auth`, authRoutes);
+app.use(`${process.env.API_PREFIX}/user-profile`, userRoutes);
 
 // 404 handler
 app.use((req, res, next) => {
