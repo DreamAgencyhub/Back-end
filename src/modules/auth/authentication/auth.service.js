@@ -12,10 +12,11 @@ export const createNewUser = async (newUser) => {
     avatar: newUser.avatar,
   });
 
-  const token = signToken({ id: _id });
+  const { token, cookieOptions } = createSendToken({ id: _id });
 
   return {
     token,
+    cookieOptions,
     user: {
       fullName,
       email,
@@ -43,9 +44,9 @@ export const loginUser = async (credentials) => {
       HTTP_STATUS.BAD_REQUEST,
     );
 
-  const token = signToken({ id: user._id });
+  const { token, cookieOptions } = createSendToken({ id: user._id });
 
-  return token;
+  return { token, cookieOptions };
 };
 
 export const handleForgotPassword = async ({ protocol, host, email }) => {
@@ -85,12 +86,11 @@ export const handleForgotPassword = async ({ protocol, host, email }) => {
   }
 };
 
-export const handleResetPassword = async ({
-  password,
-  confirmPassword,
-  token,
-}) => {
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+export const handleResetPassword = async ({ password, resetToken }) => {
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
 
   const user = await User.findOne({
     passwordResetToken: hashedToken,
@@ -109,9 +109,9 @@ export const handleResetPassword = async ({
 
   await user.save();
 
-  const JWTToken = signToken({ id: user._id });
+  const { token, cookieOptions } = createSendToken({ id: user._id });
 
-  return JWTToken;
+  return { token, cookieOptions };
 };
 
 export const handleUpdatePassword = async (
@@ -132,7 +132,22 @@ export const handleUpdatePassword = async (
   user.password = newPassword;
   await user.save();
 
-  const JWTToken = signToken({ id: user._id });
+  const { token, cookieOptions } = createSendToken({ id: user._id });
 
-  return JWTToken;
+  return { token, cookieOptions };
+};
+
+const createSendToken = ({ id }) => {
+  const token = signToken({ id });
+
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_TOKEN_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === "Production") cookieOptions.secure = true;
+
+  return { token, cookieOptions };
 };

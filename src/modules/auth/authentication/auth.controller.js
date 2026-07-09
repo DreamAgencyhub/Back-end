@@ -23,7 +23,9 @@ export const signup = catchAsync(async (req, res) => {
 export const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
-  const token = await loginUser({ email, password });
+  const { token, cookieOptions } = await loginUser({ email, password });
+
+  res.cookie("jwt", token, cookieOptions);
 
   res.status(HTTP_STATUS.OK).json({
     status: "Success",
@@ -52,11 +54,13 @@ export const forgotPassword = catchAsync(async (req, res) => {
 
 export const resetPassword = catchAsync(async (req, res) => {
   const params = {
-    token: req.params.token,
+    resetToken: req.params.token,
     password: req.body.password,
   };
 
-  const token = await handleResetPassword(params);
+  const { token, cookieOptions } = await handleResetPassword(params);
+
+  res.cookie("jwt", token, cookieOptions);
 
   res.status(HTTP_STATUS.OK).json({
     status: "Success",
@@ -70,10 +74,12 @@ export const updatePassword = catchAsync(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
   const userId = req.user._id;
 
-  const token = await handleUpdatePassword(userId, {
+  const { token, cookieOptions } = await handleUpdatePassword(userId, {
     currentPassword,
     newPassword,
   });
+
+  res.cookie("jwt", token, cookieOptions);
 
   res.status(HTTP_STATUS.OK).json({
     status: "success",
