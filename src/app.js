@@ -10,6 +10,7 @@ import courseRoutes from "./modules/course/course.route.js";
 import AppErrorHandler from "./utils/appErrorHandler.js";
 import authRoutes from "./modules/auth/authentication/auth.route.js";
 import { userRoutes } from "./modules/user/user.route.js";
+import { rateLimit } from "express-rate-limit";
 
 const app = express();
 
@@ -17,6 +18,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const rateLimiter = rateLimit({
+  max: 1000,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests from this IP, please try again in an hour!",
+});
+
+app.use("/api", rateLimiter);
 
 // Health check
 app.get("/health", (req, res) => {
