@@ -14,18 +14,17 @@ import { rateLimit } from "express-rate-limit";
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-const rateLimiter = rateLimit({
+const globalRateLimiter = rateLimit({
   max: 1000,
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again in an hour!",
 });
 
-app.use("/api", rateLimiter);
+// Middleware
+app.use("/api", globalRateLimiter);
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get("/health", (req, res) => {

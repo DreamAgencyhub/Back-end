@@ -7,12 +7,19 @@ import {
   updatePassword,
 } from "./auth.controller.js";
 import { protect } from "./auth.middleware.js";
+import rateLimit from "express-rate-limit";
 
 const authRoutes = express.Router();
 
-authRoutes.post("/signup", signup);
-authRoutes.post("/login", login);
-authRoutes.post("/forgotPassword", forgotPassword);
+const rateLimiter = rateLimit({
+  max: 10,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many login attempts from this IP, please try again in an hour!",
+});
+
+authRoutes.post("/signup", rateLimiter, signup);
+authRoutes.post("/login", rateLimiter, login);
+authRoutes.post("/forgotPassword", rateLimiter, forgotPassword);
 authRoutes.patch("/resetPassword/:token", resetPassword);
 authRoutes.patch("/updateMyPassword", protect, updatePassword);
 
