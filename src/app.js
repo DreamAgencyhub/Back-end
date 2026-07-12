@@ -14,6 +14,7 @@ import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import mongoSanitization from "express-mongo-sanitize";
 import xss from "xss-clean";
+import hpp from "hpp";
 
 const app = express();
 
@@ -31,6 +32,12 @@ app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitization());
 app.use(xss());
+
+app.use(
+  hpp({
+    whitelist: [""],
+  }),
+);
 
 // Health check
 app.get("/health", (req, res) => {
