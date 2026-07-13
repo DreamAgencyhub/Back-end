@@ -7,6 +7,7 @@ import {
   updateCourseById,
 } from "./course.service.js";
 import catchAsync from "../../utils/catchAsync.js";
+import AppErrorHandler from "../../utils/appErrorHandler.js";
 
 export const createNewCourse = catchAsync(async (req, res) => {
   const newCourse = await createCourse(req.body);
@@ -44,9 +45,14 @@ export const getCourse = catchAsync(async (req, res) => {
 
 export const updateCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const newData = req.body;
 
-  const updatedCourse = await updateCourseById(id);
+  if (!id || !req.body)
+    throw new AppErrorHandler(
+      "There is no Id or new data to update!",
+      HTTP_STATUS.BAD_REQUEST,
+    );
+
+  const updatedCourse = await updateCourseById(id, req.body);
 
   res.status(HTTP_STATUS.OK).json({
     status: "SUCCESS",
