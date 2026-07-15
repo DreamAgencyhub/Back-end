@@ -1,4 +1,4 @@
-import { HTTP_STATUS } from "../../../config/constants.js";
+import { ERROR_CODE, HTTP_STATUS } from "../../../config/constants.js";
 import AppErrorHandler from "../../../utils/appErrorHandler.js";
 import User from "../../user/user.model.js";
 import { sendEmail, signToken } from "./auth.utils.js";
@@ -56,7 +56,7 @@ export const handleForgotPassword = async ({ protocol, host, email }) => {
     throw new AppErrorHandler(
       "The user not found!",
       HTTP_STATUS.NOT_FOUND,
-      "FORGOT_PASSWORD_ERROR",
+      ERROR_CODE.FORGOT_PASSWORD_ERROR,
     );
 
   const restToken = user.createPasswordResetToken();

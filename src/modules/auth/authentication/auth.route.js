@@ -8,6 +8,7 @@ import {
 } from "./auth.controller.js";
 import { protect } from "./auth.middleware.js";
 import rateLimit from "express-rate-limit";
+import { ERROR_CODE } from "../../../config/constants.js";
 
 const authRoutes = express.Router();
 

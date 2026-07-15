@@ -37,7 +37,7 @@ export const getCourse = catchAsync(async (req, res) => {
 
   res.status(HTTP_STATUS.OK).json({
     status: "SUCCESS",
-    data: {
+    data: {``
       course,
     },
   });
