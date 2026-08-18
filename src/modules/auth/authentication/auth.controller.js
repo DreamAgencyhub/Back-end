@@ -10,12 +10,16 @@ import {
 } from "./auth.service.js";
 
 export const signup = catchAsync(async (req, res) => {
-  const user = await createNewUser(req.body);
+  const { token, cookieOptions, user } = await createNewUser(req.body);
+
+  // res.cookie("jwt", token, cookieOptions);
 
   res.status(HTTP_STATUS.CREATED).json({
-    status: "success",
+    status: "Success",
     data: {
-      ...user,
+      accessToken: token,
+      exp: cookieOptions.expires,
+      user,
     },
   });
 });
@@ -23,14 +27,16 @@ export const signup = catchAsync(async (req, res) => {
 export const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
-  const { token, cookieOptions } = await loginUser({ email, password });
+  const { token, cookieOptions, user } = await loginUser({ email, password });
 
-  res.cookie("jwt", token, cookieOptions);
+  // res.cookie("jwt", token, cookieOptions);
 
   res.status(HTTP_STATUS.OK).json({
     status: "Success",
     data: {
-      token,
+      accessToken: token,
+      exp: cookieOptions.expires,
+      user,
     },
   });
 });
@@ -64,9 +70,7 @@ export const resetPassword = catchAsync(async (req, res) => {
 
   res.status(HTTP_STATUS.OK).json({
     status: "Success",
-    data: {
-      token,
-    },
+    data: null,
   });
 });
 
@@ -83,8 +87,15 @@ export const updatePassword = catchAsync(async (req, res) => {
 
   res.status(HTTP_STATUS.OK).json({
     status: "success",
-    data: {
-      token,
-    },
+    data: null,
   });
 });
+
+// export const getMe = async (req, res) => {
+//   const currentUser = req.user;
+
+//   res.status(HTTP_STATUS.OK).json({
+//     status: "success",
+//     currentUser,
+//   });
+// };

@@ -5,11 +5,12 @@ export const signToken = (payload) =>
   jwt.sign(
     {
       ...payload,
+      exp: Date.now() + process.env.JWT_TOKEN_EXPIRES_IN * 60 * 60 * 1000,
     },
     process.env.MY_JWT_SECRET_KEY,
-    {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    },
+    // {
+    //   expiresIn: process.env.JWT_TOKEN_EXPIRES_IN * 60 * 1000,
+    // },
   );
 
 export const sendEmail = async (options) => {
