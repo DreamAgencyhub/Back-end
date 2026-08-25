@@ -73,10 +73,21 @@ export const handleForgotPassword = async ({ protocol, host, email }) => {
 
   user.save({ validateBeforeSave: false });
 
-  const resetURL = `${protocol}://${host}/api/v1/auth/resetPassword/${restToken}`;
+  // const resetURL = `${protocol}://${host}/api/v1/auth/resetPassword/${restToken}`;
+  const resetURL = `${protocol}://localhost:3000/auth/reset-password/${restToken}`;
 
-  const message = `Forgot your password? Submit a PATCH request with your new password
-   and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+  const message = ` 
+    <h2>Password Reset</h2>
+
+    <p>Click the button below to reset your password:</p>
+
+    <a href="${resetURL}">
+      Reset Password
+    </a>   
+    
+    <h6>If you didn't forget your password, please ignore this email!</h6>
+
+    `;
 
   try {
     const result = await sendEmail({
