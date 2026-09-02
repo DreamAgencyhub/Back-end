@@ -69,12 +69,12 @@ export const handleForgotPassword = async ({ protocol, host, email }) => {
       ERROR_CODE.FORGOT_PASSWORD_ERROR,
     );
 
-  const restToken = user.createPasswordResetToken();
+  const resetToken = user.createPasswordResetToken();
 
   user.save({ validateBeforeSave: false });
 
   // const resetURL = `${protocol}://${host}/api/v1/auth/resetPassword/${restToken}`;
-  const resetURL = `${protocol}://localhost:3000/auth/reset-password/${restToken}`;
+  const resetURL = `${protocol}://localhost:3000/auth/reset-password/${resetToken}`;
 
   const message = ` 
     <h2>Password Reset</h2>

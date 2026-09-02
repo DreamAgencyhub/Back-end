@@ -66,7 +66,7 @@ export const resetPassword = catchAsync(async (req, res) => {
 
   const { token, cookieOptions } = await handleResetPassword(params);
 
-  res.cookie("jwt", token, cookieOptions);
+  // res.cookie("jwt", token, cookieOptions);
 
   res.status(HTTP_STATUS.OK).json({
     status: "Success",
