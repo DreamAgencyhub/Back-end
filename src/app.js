@@ -15,6 +15,7 @@ import helmet from "helmet";
 import mongoSanitization from "express-mongo-sanitize";
 import xss from "xss-clean";
 import hpp from "hpp";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -27,11 +28,17 @@ const globalRateLimiter = rateLimit({
 // Middleware
 app.use(helmet());
 app.use("/api", globalRateLimiter);
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  }),
+);
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitization());
 app.use(xss());
+app.use(cookieParser());
 
 app.use(
   hpp({

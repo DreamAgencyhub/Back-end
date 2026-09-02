@@ -1,10 +1,14 @@
-import { HTTP_STATUS } from "../config/constants.js";
+import { ERROR_CODE, HTTP_STATUS } from "../config/constants.js";
 import AppErrorHandler from "../utils/appErrorHandler.js";
 
 const handleInvalidIDErrorDB = (err) => {
   const message = `The /${err.value}/ is not valid! Path: ${err.path} , value: ${err.value} `;
 
-  return new AppErrorHandler(message, HTTP_STATUS.BAD_REQUEST);
+  return new AppErrorHandler(
+    message,
+    HTTP_STATUS.BAD_REQUEST,
+    ERROR_CODE.INVALID_ID,
+  );
 };
 
 const convertObjectToString = (obj) => {
@@ -18,7 +22,11 @@ const handleDuplicateFiledValueErrorDB = (err) => {
 
   const message = `Duplicate filed value / ${res} /, Please enter another value! `;
 
-  return new AppErrorHandler(message, HTTP_STATUS.BAD_REQUEST);
+  return new AppErrorHandler(
+    message,
+    HTTP_STATUS.BAD_REQUEST,
+    ERROR_CODE.DUPLICATE_FILED,
+  );
 };
 
 const handleValidationErrorDB = (err) => {
@@ -26,25 +34,32 @@ const handleValidationErrorDB = (err) => {
 
   const message = `Validation Error : ${errMessages.join(". ")}`;
 
-  return new AppErrorHandler(message, HTTP_STATUS.BAD_REQUEST);
+  return new AppErrorHandler(
+    message,
+    HTTP_STATUS.BAD_REQUEST,
+    ERROR_CODE.VALIDATION_DB_ERROR,
+  );
 };
 
 const handleJWTError = () =>
   new AppErrorHandler(
     "Invalid token. Please login again!",
     HTTP_STATUS.UNAUTHORIZED,
+    ERROR_CODE.INVALID_JWT_TOKEN,
   );
 
 const handleTokenExpiredError = () =>
   new AppErrorHandler(
     "Your Token has expired! Please login again.",
     HTTP_STATUS.UNAUTHORIZED,
+    ERROR_CODE.INVALID_JWT_TOKEN,
   );
 
 const handleForgotPasswordError = () => {
   const err = new AppErrorHandler(
     "If an account with this email exists, We've sent a  password rest link",
     HTTP_STATUS.OK,
+    ERROR_CODE.FORGOT_PASSWORD_ERROR,
   );
 
   return {
@@ -70,6 +85,7 @@ const sendProductionError = (err, res) => {
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
+      code: err.errCode,
     });
   } else {
     console.err("ERROR 💥", err);
@@ -95,7 +111,7 @@ const errorHandler = (err, req, res, next) => {
     if (err.name === "ValidationError") error = handleValidationErrorDB(err);
     if (err.name === "JsonWebTokenError") error = handleJWTError();
     if (err.name === "TokenExpiredError") error = handleTokenExpiredError();
-    if (err.customName === "FORGOT_PASSWORD_ERROR")
+    if (err.errCode === "FORGOT_PASSWORD_ERROR")
       error = handleForgotPasswordError();
 
     sendProductionError(error, res);

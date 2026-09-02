@@ -1,4 +1,4 @@
-import { HTTP_STATUS } from "../../../config/constants.js";
+import { ERROR_CODE, HTTP_STATUS } from "../../../config/constants.js";
 import AppErrorHandler from "../../../utils/appErrorHandler.js";
 import User from "../../user/user.model.js";
 import { sendEmail, signToken } from "./auth.utils.js";
@@ -46,7 +46,17 @@ export const loginUser = async (credentials) => {
 
   const { token, cookieOptions } = createSendToken({ id: user._id });
 
-  return { token, cookieOptions };
+  return {
+    token,
+    cookieOptions,
+    user: {
+      fullName: user.fullName,
+      email: user.email,
+      _id: user._id,
+      role: user.role,
+      avatar: user.avatar,
+    },
+  };
 };
 
 export const handleForgotPassword = async ({ protocol, host, email }) => {
@@ -56,17 +66,28 @@ export const handleForgotPassword = async ({ protocol, host, email }) => {
     throw new AppErrorHandler(
       "The user not found!",
       HTTP_STATUS.NOT_FOUND,
-      "FORGOT_PASSWORD_ERROR",
+      ERROR_CODE.FORGOT_PASSWORD_ERROR,
     );
 
-  const restToken = user.createPasswordResetToken();
+  const resetToken = user.createPasswordResetToken();
 
   user.save({ validateBeforeSave: false });
 
-  const resetURL = `${protocol}://${host}/api/v1/auth/resetPassword/${restToken}`;
+  // const resetURL = `${protocol}://${host}/api/v1/auth/resetPassword/${restToken}`;
+  const resetURL = `${protocol}://localhost:3000/auth/reset-password/${resetToken}`;
 
-  const message = `Forgot your password? Submit a PATCH request with your new password
-   and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+  const message = ` 
+    <h2>Password Reset</h2>
+
+    <p>Click the button below to reset your password:</p>
+
+    <a href="${resetURL}">
+      Reset Password
+    </a>   
+    
+    <h6>If you didn't forget your password, please ignore this email!</h6>
+
+    `;
 
   try {
     const result = await sendEmail({
@@ -141,10 +162,9 @@ const createSendToken = ({ id }) => {
   const token = signToken({ id });
 
   const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_TOKEN_EXPIRES_IN * 24 * 60 * 60 * 1000,
-    ),
+    expires: Date.now() + process.env.JWT_TOKEN_EXPIRES_IN * 60 * 60 * 1000,
     httpOnly: true,
+    sameSite: "lax",
   };
 
   if (process.env.NODE_ENV === "Production") cookieOptions.secure = true;

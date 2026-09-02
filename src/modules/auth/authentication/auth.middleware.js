@@ -6,14 +6,14 @@ import jwt from "jsonwebtoken";
 import User from "../../user/user.model.js";
 
 export const protect = catchAsync(async (req, res, next) => {
-  let token;
+  let token = req.cookies.jwt;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
-  }
+  // if (
+  //   req.headers.authorization &&
+  //   req.headers.authorization.startsWith("Bearer")
+  // ) {
+  //   token = req.headers.authorization.split(" ")[1];
+  // }
 
   if (!token)
     throw new AppErrorHandler(
